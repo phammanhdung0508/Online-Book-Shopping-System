@@ -2,4 +2,4 @@
 
 namespace Application.Cart.Commands.RemoveItemFromCart;
 
-public sealed record RemoveItemFromCartCommand(Guid Id) : ICommand;
+public sealed record RemoveItemFromCartCommand(Guid BookId) : ICommand;

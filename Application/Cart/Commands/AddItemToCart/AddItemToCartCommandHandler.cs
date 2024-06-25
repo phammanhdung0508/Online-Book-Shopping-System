@@ -1,6 +1,6 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
-using Domain.Entities;
+using Domain.Errors;
 using Domain.Shared;
 using MediatR;
 
@@ -21,10 +21,8 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
 
     public async Task<Result> Handle(AddItemToCartCommand request, CancellationToken cancellationToken)
     {
-        string key = "cart";
-
         var result = await cacheService.GetAsync(
-            key,
+            "cart",
             async () =>
             {
                 var items = new List<CartItems>
@@ -41,16 +39,29 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
                 return cart;
             }, cancellationToken);
 
-        if(result is not null)
+        if(result is null)
         {
-            result.Items.Add(new CartItems(request.BookId, request.Quantity));
-
-            await publisher.Publish(result, cancellationToken);
-
-            await cacheService.SetAsync(key, result, cancellationToken);
+            return Result.Failure(CartErrors.NotFound);
         }
+        else
+        {
+            var item = result.Items
+            .Any(x => x.BookId == request.BookId);
 
-        return Result.Success();
+            if (item is false)
+            {
+                result.Items.Add(new CartItems(request.BookId, request.Quantity));
+
+                await publisher.Publish(result, cancellationToken);
+                await cacheService.SetAsync("cart", result, cancellationToken);
+
+                return Result.Success();
+            }
+            else
+            {
+                return Result.Failure(CartErrors.ItemExist);
+            }
+        }
     }
 }
 

@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-##  onlinebookstoremanagement:
-##    image: ${DOCKER_REGISTRY-}onlinebookstoremanagement
-##    build:
-##      context: .
-##      dockerfile: OnlineBookStoreManagement/Dockerfile
+  onlinebookstoremanagement:
+    image: ${DOCKER_REGISTRY-}onlinebookstoremanagement
+    build:
+      context: .
+      dockerfile: OnlineBookStoreManagement/Dockerfile
 
   cache:
     image: redis:latest

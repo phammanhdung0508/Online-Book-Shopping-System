@@ -21,7 +21,7 @@ internal sealed class RemoveItemFromCartCommandHandler
 
     public async Task<Result> Handle(RemoveItemFromCartCommand request, CancellationToken cancellationToken)
     {
-        var result = await cacheService.GetAsync<GetCartResponse>(
+        var result = await cacheService.GetAsync<RemoveItemFromCartEvent>(
             "cart", cancellationToken);
 
         if (result is null)
@@ -29,8 +29,25 @@ internal sealed class RemoveItemFromCartCommandHandler
             return Result.Failure(CartErrors.NotFound);
         }
 
-        await publisher.Publish(new RemoveItemFromCartEvent(request.Id), cancellationToken);
+        var item = result.Items
+            .Where(x => x.BookId == request.BookId)
+            .First();
 
-        return Result.Success();
+        if(item is not null)
+        {
+            await publisher.Publish(result, cancellationToken);
+
+            if (result.Items.Count != 1)
+            {
+                result.Items.Remove(item);
+                await cacheService.SetAsync("cart", result, cancellationToken);
+            }
+
+            return Result.Success();
+        }
+        else
+        {
+            return Result.Failure(CartErrors.ItemNotFound);
+        }
     }
 }
