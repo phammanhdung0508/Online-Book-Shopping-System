@@ -1,0 +1,15 @@
+version: '3.4'
+
+services:
+##  onlinebookstoremanagement:
+##    image: ${DOCKER_REGISTRY-}onlinebookstoremanagement
+##    build:
+##      context: .
+##      dockerfile: OnlineBookStoreManagement/Dockerfile
+
+  cache:
+    image: redis:latest
+    container_name: bookstore-redis
+    restart: always
+    ports: 
+      - "6379:6379"
