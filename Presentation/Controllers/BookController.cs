@@ -1,12 +1,11 @@
-﻿using Application.Books.Queries.GetBook;
-using Domain.Enum;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Application.Books.Queries.GetAllBook;
-using Application.Books.Commands.CreateBook;
-using Application.Books.Commands.UpdateBook;
+﻿using Application.Books.Commands.CreateBook;
 using Application.Books.Commands.DeleteBook;
 using Application.Books.Commands.ImportFromExcel;
+using Application.Books.Commands.UpdateBook;
+using Application.Books.Queries.GetAllBook;
+using Application.Books.Queries.GetBooks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers;
 
@@ -19,27 +18,15 @@ public sealed class BookController : ApiController
 
     [HttpGet("")]
     public async Task<IActionResult> Get(
-        [FromQuery] string filter,
-        [FromQuery] string sort,
+        CancellationToken cancellationToken,
         [FromQuery] int pageSize,
         [FromQuery] int pageIndex,
-        CancellationToken cancellationToken)
+        [FromQuery] string? filter = null,
+        [FromQuery] string? sort = null,
+        [FromQuery] string? sortBy = null)
     {
-        Sort s;
-        switch (sort)
-        {
-            case "asc":
-                s = Sort.Ascending;
-                break;
-            case "desc":
-                s = Sort.Descending;
-                break;
-            default:
-                s = Sort.NoSort;
-                break;
-        }
-        
-        var query = new GetBookQuery(filter, s, "");
+        var query = new GetBooksQuery
+            (pageIndex, pageSize, filter, sort, sortBy, null);
 
         var result = await Sender.Send(query, cancellationToken);
 
@@ -48,7 +35,7 @@ public sealed class BookController : ApiController
 
     [HttpGet("detail")]
     public async Task<IActionResult> GetById(
-        GetBookByIdQuery query, 
+        GetBookByIdQuery query,
         CancellationToken cancellationToken)
     {
         var result = await Sender.Send(query, cancellationToken);

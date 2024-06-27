@@ -1,8 +1,8 @@
 ﻿using Application.Cart.Dto;
 using MediatR;
 
-namespace Application.Cart.Commands.RemoveItemFromCart;
+namespace Application.Cart.Commands.CartCompletion;
 
-public sealed record RemoveItemFromCartEvent(
+public sealed record CartCompletionEvent(
     Guid Id,
     List<CartItems> Items) : INotification;

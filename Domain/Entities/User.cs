@@ -5,8 +5,8 @@ namespace Domain.Entities;
 public sealed class User : Entity
 {
     public string Email { get; private set; } = string.Empty;
-    public byte[] PasswordHash { get; private set; }
-    public byte[] PasswordSalt { get; private set; }
+    public byte[]? PasswordHash { get; private set; }
+    public byte[]? PasswordSalt { get; private set; }
     public string Phone { get; private set; } = string.Empty;
     public bool IsRemoved { get; private set; } = false;
     public DateTime RemovedAt { get; private set; } = DateTime.MinValue;
@@ -16,6 +16,7 @@ public sealed class User : Entity
     public Role? Role { get; private set; }
     /*Many -------------------------------------------------*/
     public ICollection<Order>? Orders { get; private set; }
+    public ICollection<Feedback>? Feedbacks { get; private set; }
 
     public User() { }
 

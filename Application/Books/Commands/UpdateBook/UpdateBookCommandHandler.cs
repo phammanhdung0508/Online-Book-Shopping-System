@@ -36,7 +36,7 @@ internal class UpdateBookCommandHandler : ICommandHandler<UpdateBookCommand>
             "users",
             async () =>
             {
-                var book = await bookRepository.GetBookById(id);
+                var book = await bookRepository.GetById(id);
 
                 if (book is not null)
                 {

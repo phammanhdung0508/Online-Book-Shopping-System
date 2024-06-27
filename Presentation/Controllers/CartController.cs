@@ -3,6 +3,7 @@ using Application.Cart.Commands.AddItemToCart;
 using Application.Cart.Queries.GetCart;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Application.Cart.Commands.CartCompletion;
 
 namespace Presentation.Controllers;
 
@@ -15,6 +16,14 @@ public sealed class CartController : ApiController
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var result = await Sender.Send(new GetCartQuery(), cancellationToken);
+
+        return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
+    }
+
+    [HttpPost("completion")]
+    public async Task<IActionResult> Completion(CancellationToken cancellationToken)
+    {
+        var result = await Sender.Send(new CartCompletionCommand(), cancellationToken);
 
         return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
     }

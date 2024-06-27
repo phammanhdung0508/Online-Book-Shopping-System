@@ -1,5 +1,6 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
+using Application.Cart.Dto;
 using Domain.Errors;
 using Domain.Shared;
 using MediatR;
@@ -30,7 +31,7 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
                     new CartItems(request.BookId, request.Quantity)
                 };
 
-                var cart = new AddItemToCartCartEvent(
+                var cart = new AddItemToCartEvent(
                     Guid.NewGuid(),
                     items);
 
@@ -63,16 +64,4 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
             }
         }
     }
-}
-
-public sealed class CartItems
-{
-    public CartItems(Guid bookId, int quantity)
-    {
-        BookId = bookId;
-        Quantity = quantity;
-    }
-
-    public Guid BookId { get; init; }
-    public int Quantity { get; init; }
 }

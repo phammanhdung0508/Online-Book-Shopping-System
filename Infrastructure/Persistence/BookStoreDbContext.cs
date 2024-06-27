@@ -6,11 +6,12 @@ namespace Infrastructure.Persistence;
 
 public class BookStoreDbContext : DbContext
 {
-    public DbSet<Book> Books { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderDetail> OrderDetails { get; set; }
-    public DbSet<Role> Roles { get; set; }
-    public DbSet<User> Users { get; set; }
+    public DbSet<Book>? Books { get; set; }
+    public DbSet<Order>? Orders { get; set; }
+    public DbSet<OrderDetail>? OrderDetails { get; set; }
+    public DbSet<Role>? Roles { get; set; }
+    public DbSet<User>? Users { get; set; }
+    public DbSet<Feedback>? Feedbacks { get; set; }
 
     public BookStoreDbContext
         (DbContextOptions<BookStoreDbContext> options) : base(options)
@@ -29,5 +30,6 @@ public class BookStoreDbContext : DbContext
         modelBuilder.Entity<OrderDetail>(b => b.HasKey(u => u.Id));
         modelBuilder.Entity<Role>(b => b.HasKey(u => u.Id));
         modelBuilder.Entity<User>(b => b.HasKey(u => u.Id));
+        modelBuilder.Entity<Feedback>(b => b.HasKey(u => u.Id));
     }
 }

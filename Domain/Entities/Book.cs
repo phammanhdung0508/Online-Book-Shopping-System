@@ -17,6 +17,7 @@ public sealed class Book : Entity
     /*One -------------------------------------------------*/
     /*Many -------------------------------------------------*/
     public ICollection<Order>? Orders { get; private set; }
+    public ICollection<Feedback>? Feedbacks { get; private set; }
 
     public Book() { }
 

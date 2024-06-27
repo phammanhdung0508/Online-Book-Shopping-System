@@ -1,56 +1,40 @@
 ﻿using Domain.Abstractions.IRepository;
 using Domain.Entities;
 using Domain.Shared;
-using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class BookRepository : IBookRepository
+public sealed class OrderRepository
+    : IOrderRepository
 {
-    private readonly DbSet<Book> context;
-
-    public BookRepository(BookStoreDbContext context)
+    private readonly DbSet<Order> context;
+    public OrderRepository(DbSet<Order> context)
     {
-        this.context = context.Set<Book>();
+        this.context = context;
     }
 
-    public void Create(Book book)
+    public void Create(Order order)
     {
-        context.Add(book);
+        context.Add(order);
     }
 
-    public void Delete(Guid Id)
-    {
-        var book = context.Find(Id);
-        if (book is not null)
-        {
-            book.Remove();
-            context.Update(book);
-        }
-    }
-
-    public async Task<Book?> GetById
-        (Guid Id, CancellationToken cancellationToken = default)
-    {
-        return await context.
-            FirstOrDefaultAsync(b => b.Id == Id);
-    }
-
-    public async Task<List<Book>> Get(
-        int pageIndex,
-        int pageSize,
-        string? filter,
-        string? sort,
-        string? sortBy,
-        string? includeProperties,
+    public async Task<List<Order>> Get(
+        int pageIndex, 
+        int pageSize, 
+        string? filter, 
+        string? sort, 
+        string? sortBy, 
+        string? includeProperties, 
         CancellationToken cancellationToken = default)
     {
-        IQueryable<Book> query = context;
+        IQueryable<Order> query = context;
+
+        DateTime.TryParse(filter, out var date);    // Maybe it will bug right here.
 
         if (!string.IsNullOrEmpty(filter))
         {
-            query.Where(b => b.Title.Contains(filter));
+            query.Where(b => b.OrderDate < date);
         }
 
         if (!string.IsNullOrEmpty(includeProperties))
@@ -77,11 +61,16 @@ public class BookRepository : IBookRepository
             }
         }
 
-        return await Pagination<Book>.Get(query, pageIndex, pageSize);
+        return await Pagination<Order>.Get(query, pageIndex, pageSize);
     }
 
-    public void Update(Book book)
+    public async Task<Order?> GetById(Guid id)
     {
-        context.Update(book);
+        return await context.FindAsync(id);
+    }
+
+    public void Update(Order order)
+    {
+        context.Update(order);
     }
 }

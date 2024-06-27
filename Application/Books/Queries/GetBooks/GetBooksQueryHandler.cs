@@ -1,19 +1,18 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
-using Application.Users.Queries;
 using Domain.Abstractions.IRepository;
 using Domain.Errors;
 using Domain.Shared;
 
-namespace Application.Books.Queries.GetBook;
+namespace Application.Books.Queries.GetBooks;
 
-internal sealed class GetBookQueryHandler
-    : IQueryHandler<GetBookQuery, List<GetBookResponse>>
+internal sealed class GetBooksQueryHandler
+    : IQueryHandler<GetBooksQuery, List<GetBooksResponse>>
 {
     private readonly IBookRepository bookRepository;
     private readonly ICacheService cacheService;
 
-    public GetBookQueryHandler(
+    public GetBooksQueryHandler(
         IBookRepository bookRepository,
         ICacheService cacheService)
     {
@@ -21,25 +20,30 @@ internal sealed class GetBookQueryHandler
         this.cacheService = cacheService;
     }
 
-    public async Task<Result<List<GetBookResponse>>> Handle(GetBookQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetBooksResponse>>> Handle(GetBooksQuery request, CancellationToken cancellationToken)
     {
-        var result = await cacheService.GetAsync<List<GetBookResponse>>(
+        var result = await cacheService.GetAsync<List<GetBooksResponse>>(
             "books",
             async () =>
             {
-                var list = await bookRepository.GetBooks(
-                    request.sort,
+                var list = await bookRepository.Get(
+                    request.PageIndex,
+                    request.PageSize,
                     request.Filter,
-                    request.includeProperties,
+                    request.Sort,
+                    request.SortBy,
+                    request.IncludeProperties,
                     cancellationToken);
 
                 if (list is not null)
                 {
-                    var response = new List<GetBookResponse>();
+                    var response = new List<GetBooksResponse>();
+
                     foreach (var item in list)
                     {
-                        response.Add(new GetBookResponse(item.Id, item.Title));
+                        response.Add(new GetBooksResponse(item.Id, item.Title));
                     }
+
                     return response;
                 }
 
@@ -50,6 +54,6 @@ internal sealed class GetBookQueryHandler
             return result;
         }
 
-        return Result.Failure<List<GetBookResponse>>(Error.NullValue);
+        return Result.Failure<List<GetBooksResponse>>(Error.NullValue);
     }
 }
