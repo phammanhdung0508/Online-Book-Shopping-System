@@ -1,13 +1,12 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Cart.Commands.AddItemToCart;
 using Application.Cart.Commands.RemoveItemFromCart;
-using Domain.Shared;
 using MediatR;
 
 namespace Application.Cart.Commands;
 
 internal sealed class CacheInvalidationCartHandler :
-    INotificationHandler<AddItemToCartCartEvent>,
+    INotificationHandler<AddItemToCartEvent>,
     INotificationHandler<RemoveItemFromCartEvent>
 {
     private readonly ICacheService cacheService;
@@ -22,7 +21,7 @@ internal sealed class CacheInvalidationCartHandler :
         return HandleInternal(notification.Id, cancellationToken);
     }
 
-    public Task Handle(AddItemToCartCartEvent notification, CancellationToken cancellationToken)
+    public Task Handle(AddItemToCartEvent notification, CancellationToken cancellationToken)
     {
         return HandleInternal(notification.Id, cancellationToken);
     }

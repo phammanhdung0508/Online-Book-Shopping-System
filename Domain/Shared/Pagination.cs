@@ -14,9 +14,9 @@ public class Pagination<T> : List<T> where T : class
     public bool HasPreviousPage => PageIndex > 1;
     public bool HasNextPage => PageIndex < PageTotal;
 
-    public static Pagination<T> Get(IQueryable<T> srouce, int pageIndex, int pageSize)
+    public static async Task<Pagination<T>> Get(IQueryable<T> srouce, int pageIndex, int pageSize)
     {
-        var list = srouce.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
+        var list = await Task.Run(() => srouce.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList());
         var count = list.Count;
         return new Pagination<T>(list, count, pageIndex, pageSize);
     }

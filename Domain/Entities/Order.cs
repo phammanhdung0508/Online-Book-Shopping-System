@@ -25,6 +25,7 @@ public sealed class Order : Entity
         public Builder SetIsRemoved(bool isRemoved) { _order.IsRemoved = isRemoved; return this; }
         public Builder SetRemovedAt(DateTime removedAt) { _order.RemovedAt = removedAt; return this; }
         public Builder SetUserId(Guid userId) { _order.UserId = userId; return this; }
+        //public Builder SetOrderDetails(List<OrderDetail> list) { _order.OrderDetails = list; return this; }
 
         public Order Build() => _order;
     }

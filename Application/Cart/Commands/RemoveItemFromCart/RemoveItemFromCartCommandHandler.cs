@@ -1,6 +1,5 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
-using Application.Cart.Queries.GetCart;
 using Domain.Errors;
 using Domain.Shared;
 using MediatR;

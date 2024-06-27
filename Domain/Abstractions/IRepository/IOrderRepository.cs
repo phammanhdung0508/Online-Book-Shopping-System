@@ -1,11 +1,10 @@
 ﻿using Domain.Entities;
-using Domain.Enum;
 
 namespace Domain.Abstractions.IRepository;
 
-public interface IBookRepository
+public interface IOrderRepository
 {
-    Task<List<Book>> Get(
+    Task<List<Order>> Get(
         int pageIndex,
         int pageSize,
         string? filter,
@@ -13,8 +12,7 @@ public interface IBookRepository
         string? sortBy,
         string? includeProperties,
         CancellationToken cancellationToken = default);
-    Task<Book?> GetById(Guid Id, CancellationToken cancellationToken = default);
-    void Create(Book book);
-    void Update(Book book);
-    void Delete(Guid Id);
+    Task<Order?> GetById(Guid id);
+    void Create(Order order);
+    void Update(Order order);
 }
