@@ -1,4 +1,4 @@
-﻿using Application.Orders.Queries.GetOrderById;
+using Application.Orders.Queries.GetOrderById;
 using Application.Orders.Queries.GetOrders;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

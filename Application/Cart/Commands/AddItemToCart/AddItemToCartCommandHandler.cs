@@ -1,6 +1,5 @@
-﻿using Application.Abstractions.Caching;
+using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
-using Application.Cart.Dto;
 using Domain.Errors;
 using Domain.Shared;
 using MediatR;
@@ -40,28 +39,21 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
                 return cart;
             }, cancellationToken);
 
-        if(result is null)
+        if(item is not null)
         {
-            return Result.Failure(CartErrors.NotFound);
+            await publisher.Publish(result, cancellationToken);
+
+            if (result.Items.Count != 1)
+            {
+                result.Items.Remove(item);
+                await cacheService.SetAsync("cart", result, cancellationToken);
+            }
+
+            return Result.Success();
         }
         else
         {
-            var item = result.Items
-            .Any(x => x.BookId == request.BookId);
-
-            if (item is false)
-            {
-                result.Items.Add(new CartItems(request.BookId, request.Quantity));
-
-                await publisher.Publish(result, cancellationToken);
-                await cacheService.SetAsync("cart", result, cancellationToken);
-
-                return Result.Success();
-            }
-            else
-            {
-                return Result.Failure(CartErrors.ItemExist);
-            }
+            return Result.Failure(CartErrors.ItemNotFound);
         }
     }
 }
