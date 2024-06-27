@@ -1,5 +1,6 @@
 using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
+using Application.Cart.Dto;
 using Domain.Errors;
 using Domain.Shared;
 using MediatR;
@@ -38,6 +39,9 @@ internal sealed class AddItemToCartCommandHandler : ICommandHandler<AddItemToCar
 
                 return cart;
             }, cancellationToken);
+
+        var item = result.Items
+            .FirstOrDefault(i => i.BookId == request.BookId);
 
         if(item is not null)
         {
