@@ -3,7 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using System.Collections.Concurrent;
 
-namespace Infrastructure.Caching;
+namespace Infrastructure.Services.Caching;
 
 public class CacheService : ICacheService
 {

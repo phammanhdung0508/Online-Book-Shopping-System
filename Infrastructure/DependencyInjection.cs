@@ -2,11 +2,11 @@
 using Application.Abstractions.Services;
 using Domain.Abstractions;
 using Domain.Abstractions.IRepository;
-using Infrastructure.Caching;
-using Infrastructure.Common;
 using Infrastructure.Persistence;
 using Infrastructure.Repositories;
-using Infrastructure.Services;
+using Infrastructure.Services.Caching;
+using Infrastructure.Services.Common;
+using Infrastructure.Services.JWTToken;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +34,9 @@ public static class DependencyInjection
 
         services.AddScoped<IBookRepository, BookRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
+        services.AddScoped<IOrderRepository, OrderRepository>();
+        services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 
         return services;
     }
