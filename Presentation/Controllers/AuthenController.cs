@@ -10,7 +10,6 @@ namespace Presentation.Controllers;
 
 [ApiController]
 [ApiVersion(1)]
-[ApiVersion(2)]
 [Route("api/v{v:apiVersion}/authentication")]
 public sealed class AuthenController : ApiController
 {
