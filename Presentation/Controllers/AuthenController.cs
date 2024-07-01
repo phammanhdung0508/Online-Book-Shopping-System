@@ -1,10 +1,8 @@
 ﻿using Application.Users.Commands.CreateUser;
-using Application.Users.Queries.GetUser;
-using Application.Users.Queries;
-using Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using Asp.Versioning;
+using Application.Users.Commands.LoginUser;
 
 namespace Presentation.Controllers;
 
@@ -16,12 +14,12 @@ public sealed class AuthenController : ApiController
     public AuthenController(ISender sender) : base(sender) { }
 
     [MapToApiVersion(1)]
-    [HttpGet("login")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login
-        ([FromBody] GetUserQuery query,
+        ([FromBody] LoginUserCommand command,
         CancellationToken cancellationToken)
     {
-        Result<UserResponse> response = await Sender.Send(query, cancellationToken);
+        var response = await Sender.Send(command, cancellationToken);
 
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }

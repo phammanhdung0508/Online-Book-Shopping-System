@@ -4,15 +4,15 @@ using Domain.Abstractions.IRepository;
 using Domain.Errors;
 using Domain.Shared;
 
-namespace Application.Users.Queries.GetAllUser;
+namespace Application.Users.Queries.GetUsers;
 
-internal sealed class GetAllUserQueryHandler
-    : IQueryHandler<GetAllUserQuery, List<UserResponse>>
+internal sealed class GetUsersQueryHandler
+    : IQueryHandler<GetUsersQuery, List<GetUsersResponse>>
 {
     private readonly IUserRepository userRepository;
     private readonly ICacheService cacheService;
 
-    public GetAllUserQueryHandler
+    public GetUsersQueryHandler
         (IUserRepository userRepository,
         ICacheService cacheService)
     {
@@ -20,10 +20,10 @@ internal sealed class GetAllUserQueryHandler
         this.cacheService = cacheService;
     }
 
-    public async Task<Result<List<UserResponse>>> Handle
-        (GetAllUserQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<GetUsersResponse>>> Handle
+        (GetUsersQuery request, CancellationToken cancellationToken)
     {
-        var result = await cacheService.GetAsync<List<UserResponse>>(
+        var result = await cacheService.GetAsync<List<GetUsersResponse>>(
                 "users",
                 async () =>
                 {
@@ -32,12 +32,12 @@ internal sealed class GetAllUserQueryHandler
                     if (list is not null)
                     {
 
-                        var response = new List<UserResponse>();
+                        var response = new List<GetUsersResponse>();
 
                         foreach (var item in list)
                         {
                             response.Add
-                                (new UserResponse(item.Id, item.Email, "", ""));
+                                (new GetUsersResponse(item.Id, item.Email, "", ""));
                         }
 
                         return response;
@@ -48,7 +48,7 @@ internal sealed class GetAllUserQueryHandler
 
         if (result is null)
         {
-            return Result.Failure<List<UserResponse>>(Error.NullValue);
+            return Result.Failure<List<GetUsersResponse>>(Error.NullValue);
         }
 
         return result;

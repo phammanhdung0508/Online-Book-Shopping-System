@@ -29,14 +29,25 @@ public sealed class UserRepository : IUserRepository
         }
     }
 
-    public async Task<List<User>> Get(CancellationToken cancellationToken = default)
+    public async Task<List<User>> Get
+        (CancellationToken cancellationToken = default)
     {
         return await context.ToListAsync();
     }
 
-    public async Task<User?> GetUserByEmail
+    public async Task<User?> GetByEmail
         (string email, CancellationToken cancellationToken = default)
     {
-        return await context.FirstOrDefaultAsync(u => u.Email == email);
+        return await context
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public async Task<User?> GetById
+        (Guid id, CancellationToken cancellationToken = default)
+    {
+        return await context
+            .Include(u => u.Role)
+            .FirstOrDefaultAsync(u => u.Id == id);
     }
 }
