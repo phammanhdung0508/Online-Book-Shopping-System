@@ -57,13 +57,4 @@ public sealed class CreateUserCommandHandler
             passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }
-
-    private static bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-    {
-        using (var hmac = new HMACSHA512(passwordSalt))
-        {
-            var computeHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            return computeHash.SequenceEqual(passwordHash);
-        }
-    }
 }

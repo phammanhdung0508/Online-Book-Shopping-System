@@ -26,9 +26,9 @@ public sealed class DeleteUserCommandHandler : ICommandHandler<DeleteUserCommand
     {
         userRepository.Delete(request.userId);
 
-        await unitOfWork.SaveChangeAsync(cancellationToken);
-
-        await publisher.Publish(new UserDeletedEvent { Id = request.userId }, cancellationToken);
+        await Task.WhenAll(
+            unitOfWork.SaveChangeAsync(cancellationToken),
+            publisher.Publish(new UserDeletedEvent { Id = request.userId }, cancellationToken));
 
         return Result.Success();
     }
