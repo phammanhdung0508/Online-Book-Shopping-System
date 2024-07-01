@@ -1,6 +1,5 @@
 ﻿using Application.Abstractions.Caching;
 using Application.Abstractions.Messaging;
-using Application.Books.Queries.GetBookById;
 using Domain.Abstractions.IRepository;
 using Domain.Errors;
 using Domain.Shared;
@@ -26,13 +25,11 @@ internal sealed class GetOrderByIdQueryHandler
 
     public async Task<Result<GetOrderByIdResponse>> Handle(GetOrderByIdQuery request, CancellationToken cancellationToken)
     {
-        var id = Guid.Parse(request.Id);
-
         var result = await cacheService.GetAsync<GetOrderByIdResponse>(
-            $"orders-{id}",
+            $"orders-{request.Id}",
             async () =>
             {
-                var order = await orderRepository.GetById(id);
+                var order = await orderRepository.GetById(request.Id);
 
                 if (order is not null)
                 {

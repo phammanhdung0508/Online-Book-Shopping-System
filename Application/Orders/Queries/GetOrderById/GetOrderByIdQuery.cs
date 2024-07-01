@@ -2,4 +2,4 @@
 
 namespace Application.Orders.Queries.GetOrderById;
 
-public sealed record GetOrderByIdQuery(string Id) : IQuery<GetOrderByIdResponse>;
+public sealed record GetOrderByIdQuery(Guid Id) : IQuery<GetOrderByIdResponse>;

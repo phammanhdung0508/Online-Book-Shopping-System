@@ -4,14 +4,18 @@ using Application.Cart.Queries.GetCart;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Application.Cart.Commands.CartCompletion;
+using Asp.Versioning;
 
 namespace Presentation.Controllers;
 
-[Route("api/cart")]
+[ApiController]
+[ApiVersion(1)]
+[Route("api/v{version:apiVersion}/cart")]
 public sealed class CartController : ApiController
 {
     public CartController(ISender sender) : base(sender) { }
 
+    [MapToApiVersion(1)]
     [HttpGet("")]
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
@@ -20,6 +24,7 @@ public sealed class CartController : ApiController
         return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
     }
 
+    [MapToApiVersion(1)]
     [HttpPost("completion")]
     public async Task<IActionResult> Completion(CancellationToken cancellationToken)
     {
@@ -27,7 +32,8 @@ public sealed class CartController : ApiController
 
         return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
     }
-    
+
+    [MapToApiVersion(1)]
     [HttpPost("add-item")]
     public async Task<IActionResult> Create(
         [FromBody] AddItemToCartCommand command,
@@ -38,6 +44,7 @@ public sealed class CartController : ApiController
         return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
     }
 
+    [MapToApiVersion(1)]
     [HttpDelete("remove-item")]
     public async Task<IActionResult> Delete(
         [FromBody] RemoveItemFromCartCommand command,

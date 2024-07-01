@@ -1,6 +1,7 @@
 ﻿using Domain.Abstractions.IRepository;
 using Domain.Entities;
 using Domain.Shared;
+using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
@@ -9,9 +10,9 @@ public sealed class OrderRepository
     : IOrderRepository
 {
     private readonly DbSet<Order> context;
-    public OrderRepository(DbSet<Order> context)
+    public OrderRepository(BookStoreDbContext context)
     {
-        this.context = context;
+        this.context = context.Set<Order>();
     }
 
     public void Create(Order order)

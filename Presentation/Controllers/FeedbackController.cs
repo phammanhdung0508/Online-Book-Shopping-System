@@ -1,24 +1,20 @@
-﻿using Application.Books.Commands.CreateBook;
-using Application.Books.Commands.DeleteBook;
-using Application.Books.Commands.ImportFromExcel;
-using Application.Books.Commands.UpdateBook;
-using Application.Books.Queries.GetAllBook;
-using Application.Books.Queries.GetBooks;
-using Asp.Versioning;
+﻿using Microsoft.AspNetCore.Mvc;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
+using Application.Feedbacks.Queries.GetFeedbacks;
+using Application.Feedbacks.Queries.GetFeedbackById;
+using Application.Feedbacks.Commands.CreateFeedback;
+using Application.Feedbacks.Commands.UpdateFeedback;
+using Application.Feedbacks.Commands.DeleteFeedback;
+using Asp.Versioning;
 
 namespace Presentation.Controllers;
 
 [ApiController]
 [ApiVersion(1)]
-[ApiVersion(2, Deprecated = true)]
-[Route("api/v{v:apiVersion}/books")]
-public sealed class BookController : ApiController
+[Route("api/v{v:apiVersion}/feedbacks")]
+public sealed class FeedbackController : ApiController
 {
-    public BookController(ISender sender)
-        : base(sender)
-    { }
+    public FeedbackController(ISender sender) : base(sender) { }
 
     [MapToApiVersion(1)]
     [HttpGet("")]
@@ -30,7 +26,7 @@ public sealed class BookController : ApiController
         [FromQuery] string? sort = null,
         [FromQuery] string? sortBy = null)
     {
-        var query = new GetBooksQuery
+        var query = new GetFeedbacksQuery
             (pageIndex, pageSize, filter, sort, sortBy, null);
 
         var result = await Sender.Send(query, cancellationToken);
@@ -41,7 +37,7 @@ public sealed class BookController : ApiController
     [MapToApiVersion(1)]
     [HttpGet("detail")]
     public async Task<IActionResult> GetById(
-        GetBookByIdQuery query,
+        GetFeedbackByIdQuery query,
         CancellationToken cancellationToken)
     {
         var result = await Sender.Send(query, cancellationToken);
@@ -51,17 +47,8 @@ public sealed class BookController : ApiController
 
     [MapToApiVersion(1)]
     [HttpPost("add")]
-    public async Task<IActionResult> Add([FromBody] CreateBookCommand command, CancellationToken cancellationToken)
-    {
-        var result = await Sender.Send(command, cancellationToken);
-
-        return result.IsSuccess ? Ok(result) : BadRequest(result.Error);
-    }
-
-    [MapToApiVersion(1)]
-    [HttpPost("import")]
-    public async Task<IActionResult> ImportFromExcel(
-        [FromBody] ImportFromExcelCommand command, CancellationToken cancellationToken)
+    public async Task<IActionResult> Add(
+        [FromBody] FeedbackCreatedCommand command, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(command, cancellationToken);
 
@@ -71,7 +58,7 @@ public sealed class BookController : ApiController
     [MapToApiVersion(1)]
     [HttpPut("edit")]
     public async Task<IActionResult> Edit(
-        [FromBody] UpdateBookCommand command, CancellationToken cancellationToken)
+        [FromBody] FeedbackUpdatedCommand command, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(command, cancellationToken);
 
@@ -81,7 +68,7 @@ public sealed class BookController : ApiController
     [MapToApiVersion(1)]
     [HttpDelete("remove")]
     public async Task<IActionResult> Remove(
-        [FromBody] DeleteBookCommand command, CancellationToken cancellationToken)
+        [FromBody] FeedbackDeletedCommand command, CancellationToken cancellationToken)
     {
         var result = await Sender.Send(command, cancellationToken);
 

@@ -4,14 +4,18 @@ using Application.Users.Queries;
 using Domain.Shared;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Asp.Versioning;
 
 namespace Presentation.Controllers;
 
-[Route("api/authentication")]
+[ApiController]
+[ApiVersion(1)]
+[Route("api/v{v:apiVersion}/authentication")]
 public sealed class AuthenController : ApiController
 {
     public AuthenController(ISender sender) : base(sender) { }
 
+    [MapToApiVersion(1)]
     [HttpGet("login")]
     public async Task<IActionResult> Login
         ([FromBody] GetUserQuery query,
@@ -22,6 +26,7 @@ public sealed class AuthenController : ApiController
         return response.IsSuccess ? Ok(response.Value) : NotFound(response.Error);
     }
 
+    [MapToApiVersion(1)]
     [HttpPost("register")]
     public async Task<IActionResult> Register
         ([FromBody] CreateUserCommand command,

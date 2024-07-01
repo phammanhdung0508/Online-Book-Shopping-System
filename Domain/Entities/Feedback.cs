@@ -18,6 +18,21 @@ public sealed class Feedback : Entity
     public Book? Book { get; private set; }
 
     public Feedback() { }
+
+    public void Remove()
+    {
+        IsRemoved = true;
+        RemovedAt = DateTime.UtcNow;
+    }
+
+    public void Update(
+        string content,
+        string feedbackOn)
+    {
+        Content = content;
+        FeedbackOn = feedbackOn;
+    }
+
     public class Builder
     {
         private Feedback feedback = new Feedback();

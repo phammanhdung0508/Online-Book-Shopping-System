@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories;
 
-public class BookRepository : IBookRepository
+public sealed class BookRepository : IBookRepository
 {
     private readonly DbSet<Book> context;
 
